@@ -1,16 +1,16 @@
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .models import Review
 from .serializers import ReviewSerializer
 from drf_spectacular.utils import extend_schema
+from rest_framework.exceptions import ValidationError
+
 
 @extend_schema(tags=['Reviews'])
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Allow read-only for unauthenticated users
-
 
     def get_reviews_for_book(self, book_id):
         # Filter reviews for the given book
@@ -25,5 +25,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return super().list(request)
 
     def perform_create(self, serializer):
+        # Get the current user
+        user = self.request.user
+        book = serializer.validated_data['book']
+
+        # Check if the user has already reviewed the book
+        if Review.objects.filter(reviewer=user, book=book).exists():
+            raise ValidationError("You have already reviewed this book.")
+
         # Automatically set the reviewer as the logged-in user
-        serializer.save(reviewer=self.request.user)
+        serializer.save(reviewer=user)
