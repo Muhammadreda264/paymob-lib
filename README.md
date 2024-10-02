@@ -73,6 +73,37 @@ Similarly, you can populate reviews using a management command:
 ```bash
 python manage.py populate_reviews --num-reviews 20  # Adjust the number as needed
 ```
+## Running with Docker
+### 1. Build and Run Docker Containers
+
+```bash
+docker-compose up --build
+```
+### 2. Migrate the Database
+
+To apply migrations inside the Docker container:
+```bash
+docker-compose exec web python manage.py migrate
+```
+### Create a Superuser
+
+You can create a superuser within the Docker container by running:
+
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
+### Access the Application
+
+Now you can access the app at http://localhost:8000/.
+### Populating Books with docker
+
+```bash
+    sudo docker-compose exec web python manage.py populate_books --num-books 10  # Adjust the number as needed
+```
+### Populating Reviews
+```bash
+sudo docker-compose exec web python manage.py populate_reviews --num-reviews 20  # Adjust the number as needed
+```
 
 ### 3. JWT Authentication
 Users can register and log in to obtain a JWT token:
@@ -89,5 +120,4 @@ Include the token in the `Authorization` header for any requests that require au
 - `PUT /api/reviews/<review_id>/` - Edit a review (authenticated users only).
 - `DELETE /api/reviews/<review_id>/` - Delete a review (authenticated users only).
 
-## Conclusion
-Cool Book Store is a simple yet powerful platform for book enthusiasts to share their thoughts and discover new reads. Feel free to contribute to the project or suggest features!
+
