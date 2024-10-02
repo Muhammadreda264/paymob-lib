@@ -23,7 +23,7 @@ Cool Book Store is a Django-based application that allows users to browse books,
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Muhammadreda264/paymob-lib/
 cd cool-book-store
 ```
 
