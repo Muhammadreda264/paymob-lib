@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14  # Use the official PostgreSQL image
+    environment:
+      POSTGRES_DB: your_db_name  # Replace with your database name
+      POSTGRES_USER: your_username  # Replace with your database username
+      POSTGRES_PASSWORD: your_password  # Replace with your database password
+    ports:
+      - "5432:5432"  # Expose PostgreSQL on port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist data
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"  # Expose Django on port 8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://your_username:your_password@db:5432/your_db_name  # Update with your database credentials
+
+volumes:
+  postgres_data:
